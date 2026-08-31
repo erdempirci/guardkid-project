@@ -3,6 +3,7 @@
   "rewrites": [
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/t/:token", "destination": "/index.html" },
-    { "source": "/api/profile", "destination": "/api/profile.js" }
+    { "source": "/api/profile", "destination": "/api/profile.js" },
+    { "source": "/", "destination": "/index.html" }
   ]
 }
