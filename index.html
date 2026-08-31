@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuardKid Medical ID - Tıbbi Acil Durum Profili</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #0a0f1d; color: #f8fafc; display: flex; justify-content: center; padding: 16px; min-height: 100vh; }
+    .container { width: 100%; max-width: 440px; background: #131d35; border-radius: 20px; padding: 20px; border: 1px solid #233358; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+    
+    .med-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #ef4444; padding-bottom: 12px; margin-bottom: 16px; }
+    .med-logo { font-weight: 800; font-size: 18px; color: #ef4444; display: flex; align-items: center; gap: 8px; }
+    .med-badge { background: #dc2626; color: white; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; }
+
+    .triage-box { background: #3b0d0d; border: 1.5px solid #ef4444; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+    .triage-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .triage-row:last-child { margin-bottom: 0; }
+    .triage-label { font-size: 11px; text-transform: uppercase; color: #fca5a5; font-weight: 800; letter-spacing: 0.5px; }
+    .triage-val { font-size: 14px; font-weight: 700; color: #fff; text-align: right; max-width: 65%; }
+    .blood-badge { background: #dc2626; color: white; font-size: 15px; font-weight: 900; padding: 2px 10px; border-radius: 6px; }
+
+    .directive-card { background: #1c1917; border-left: 4px solid #f59e0b; border-radius: 0 12px 12px 0; padding: 12px 14px; margin-bottom: 14px; font-size: 13px; color: #fef08a; line-height: 1.45; }
+
+    .section-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: #94a3b8; margin-bottom: 8px; letter-spacing: 0.5px; }
+    .detail-card { background: #0a0f1d; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; border: 1px solid #233358; }
+    .detail-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #172342; font-size: 13px; }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: #94a3b8; }
+    .detail-val { font-weight: 600; color: #f8fafc; }
+
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn-contact { background: #2563eb; color: white; text-decoration: none; padding: 13px 8px; border-radius: 10px; font-size: 13px; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-112 { background: #dc2626; grid-column: span 2; font-size: 14px; }
+    .btn-contact:active { opacity: 0.85; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="med-header">
+      <div class="med-logo">⚕️ GuardKid Medical ID</div>
+      <span class="med-badge">ICE / ACİL MEDİKAL</span>
+    </div>
+
+    <!-- KRİTİK TRİYAJ BİLGİLERİ -->
+    <div class="triage-box">
+      <div class="triage-row">
+        <span class="triage-label">Kan Grubu</span>
+        <span class="blood-badge" id="dispBlood">A Rh+</span>
+      </div>
+      <div class="triage-row">
+        <span class="triage-label">Hayati Alerjiler</span>
+        <span class="triage-val" id="dispAllergies" style="color: #fca5a5;">Penisilin, Yer Fıstığı (Anafilaksi)</span>
+      </div>
+      <div class="triage-row">
+        <span class="triage-label">Kronik Tanı</span>
+        <span class="triage-val" id="dispChronic">Tip-1 Diyabet (İnsülin)</span>
+      </div>
+    </div>
+
+    <!-- MÜDAHALE TALİMATI -->
+    <div class="directive-card">
+      <strong>⚠️ İlk Müdahale Direktifi:</strong><br>
+      <span id="dispInstruction">Nefes darlığı veya anafilaktik şok belirtisinde çantasındaki EpiPen'i (0.3mg) uyluk dış yanına uygulayın. 112'yi arayın.</span>
+    </div>
+
+    <!-- HASTA DETAYI -->
+    <div class="section-title">Klinik & Hasta Bilgisi</div>
+    <div class="detail-card">
+      <div class="detail-row"><span class="detail-label">Hasta:</span><span class="detail-val" id="dispName">Ali (6 Yaş)</span></div>
+      <div class="detail-row"><span class="detail-label">Düzenli İlaçlar:</span><span class="detail-val" id="dispMeds">Lantus İnsülin (Günde 1)</span></div>
+      <div class="detail-row"><span class="detail-label">Tıbbi Cihaz / İmplant:</span><span class="detail-val" id="dispDevice">Sürekli Glikoz Monitörü (CGM)</span></div>
+      <div class="detail-row"><span class="detail-label">Medikal ID:</span><span class="detail-val" style="color: #38bdf8;">GK-8492</span></div>
+    </div>
+
+    <!-- ACİL ÇAĞRI (ICE) -->
+    <div class="section-title">Acil Durum İletişim (ICE)</div>
+    <div class="contact-grid">
+      <a id="dispMom" href="tel:+905528326213" class="btn-contact">📞 Anne (ICE 1)</a>
+      <a id="dispDad" href="tel:+905528326213" class="btn-contact">📞 Baba (ICE 2)</a>
+      <a href="tel:112" class="btn-contact btn-112">🚑 112 Acil Çağrı</a>
+    </div>
+  </div>
+
+  <script>
+    fetch('/api/profile')
+      .then(res => res.json())
+      .then(data => {
+        if (data) {
+          if (data.bloodGroup) document.getElementById('dispBlood').innerText = data.bloodGroup;
+          if (data.allergies) document.getElementById('dispAllergies').innerText = data.allergies;
+          if (data.chronicCondition) document.getElementById('dispChronic').innerText = data.chronicCondition;
+          if (data.instruction) document.getElementById('dispInstruction').innerText = data.instruction;
+          if (data.childName) document.getElementById('dispName').innerText = data.childName;
+          if (data.medications) document.getElementById('dispMeds').innerText = data.medications;
+          if (data.motherPhone) document.getElementById('dispMom').href = `tel:${data.motherPhone}`;
+          if (data.fatherPhone) document.getElementById('dispDad').href = `tel:${data.fatherPhone}`;
+        }
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>
