@@ -3,19 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acil Durum Çocuk Profili</title>
+  <title>GuardKid - Acil Durum Çocuk Profili</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: #0f172a; color: #f8fafc; display: flex; justify-content: center; padding: 20px 16px; }
+    body { background: #0f172a; color: #f8fafc; display: flex; justify-content: center; padding: 20px 16px; min-height: 100vh; }
     .container { width: 100%; max-width: 420px; background: #1e293b; border-radius: 24px; padding: 24px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); border: 1px solid #334155; }
     .badge { display: inline-block; background: #ef4444; color: white; font-weight: 700; font-size: 12px; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; margin-bottom: 12px; }
     .title { font-size: 22px; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
     .subtitle { font-size: 14px; color: #94a3b8; margin-bottom: 20px; }
-    .sos-button { width: 100%; background: #dc2626; color: white; border: none; padding: 18px; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 0 20px rgba(220, 38, 38, 0.4); }
+    
+    .sos-button { width: 100%; background: #25D366; color: white; border: none; padding: 18px; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 0 20px rgba(37, 211, 102, 0.4); transition: transform 0.1s ease; text-decoration: none; }
     .sos-button:active { transform: scale(0.97); }
+    
     .status-box { margin-top: 15px; font-size: 13px; text-align: center; color: #38bdf8; min-height: 20px; }
     .info-card { background: #0f172a; border-radius: 16px; padding: 16px; margin-top: 20px; border: 1px solid #334155; }
-    .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1e293b; font-size: 14px; }
+    .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #1e293b; font-size: 14px; }
     .info-row:last-child { border-bottom: none; }
     .label { color: #94a3b8; }
     .val { font-weight: 600; color: #f8fafc; }
@@ -23,43 +25,76 @@
   </style>
 </head>
 <body>
+
 <div class="container">
   <span class="badge">Acil Durum Kartı</span>
   <h1 class="title">Yardıma İhtiyacım Var</h1>
-  <p class="subtitle">Bu çocuk kaybolmuş olabilir. Lütfen tek tuşla ailesine anlık konum gönderin.</p>
-  <button class="sos-button" id="sosBtn" onclick="triggerAlert()">📍 Aileye Canlı Konum Gönder</button>
+  <p class="subtitle">Bu çocuk kaybolmuş olabilir. Lütfen tek tuşla ailesine WhatsApp üzerinden anlık konum iletin.</p>
+
+  <button class="sos-button" id="sosBtn" onclick="sendViaWhatsApp()">
+    💬 WhatsApp ile Aileye Konum Gönder
+  </button>
+  
   <div id="statusMsg" class="status-box"></div>
+
   <div class="info-card">
-    <div class="info-row"><span class="label">Çocuk Adı:</span><span class="val">Ali (6 Yaş)</span></div>
-    <div class="info-row"><span class="label">Kan Grubu:</span><span class="val blood">A Rh+</span></div>
-    <div class="info-row"><span class="label">Kritik Not:</span><span class="val">Fıstık Alerjisi / Astım</span></div>
+    <div class="info-row">
+      <span class="label">Çocuk Adı:</span>
+      <span class="val" id="childName">Ali (6 Yaş)</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Kan Grubu:</span>
+      <span class="val blood" id="bloodGroup">A Rh+</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Alerji / Kritik Not:</span>
+      <span class="val" id="medicalNotes">Fıstık alerjisi var / Astım</span>
+    </div>
   </div>
 </div>
+
 <script>
-  const token = window.location.pathname.split('/').pop() || "DEMO";
-  function triggerAlert() {
+  // Hedef Veli Telefon Numarası
+  const PARENT_PHONE = "905528326213";
+  const pathParts = window.location.pathname.split('/');
+  const token = pathParts[pathParts.length - 1] || "DEMO";
+
+  function sendViaWhatsApp() {
     const btn = document.getElementById("sosBtn");
     const status = document.getElementById("statusMsg");
     btn.disabled = true;
-    status.innerText = "Konum alınıyor ve iletiliyor...";
+    btn.style.opacity = "0.7";
+    status.innerText = "Konum alınıyor ve WhatsApp açılıyor...";
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (pos) => sendData(pos.coords.latitude, pos.coords.longitude),
-        () => sendData(null, null),
-        { enableHighAccuracy: true, timeout: 7000 }
+        (pos) => redirectToWhatsApp(pos.coords.latitude, pos.coords.longitude),
+        (err) => redirectToWhatsApp(null, null),
+        { enableHighAccuracy: true, timeout: 6000 }
       );
     } else {
-      sendData(null, null);
+      redirectToWhatsApp(null, null);
     }
   }
-  function sendData(lat, lng) {
-    fetch("/api/alert", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token: token, lat: lat, lng: lng, time: new Date().toISOString() })
-    }).then(() => {
-      document.getElementById("statusMsg").innerHTML = "✅ <strong>Aileye acil bildirim iletildi!</strong>";
-    });
+
+  function redirectToWhatsApp(lat, lng) {
+    const childName = document.getElementById("childName").innerText;
+    let messageText = `🚨 *ACİL DURUM BİLDİRİMİ* 🚨\n\nMerhaba, *${childName}* isimli çocuğunuzun GuardKid bilekliğini okuttum ve şu an yanındayım.`;
+
+    if (lat && lng) {
+      messageText += `\n\n📍 *Bulunduğumuz Konum:* https://maps.google.com/?q=${lat},${lng}`;
+    } else {
+      messageText += `\n\n📍 *Konum bilgisi alınamadı.*`;
+    }
+
+    messageText += `\n🏷 *Bileklik Kodu:* ${token}`;
+
+    const waUrl = `https://wa.me/${PARENT_PHONE}?text=${encodeURIComponent(messageText)}`;
+    
+    document.getElementById("statusMsg").innerHTML = "✅ WhatsApp'a yönlendiriliyorsunuz...";
+    
+    // WhatsApp'ı doğrudan aç
+    window.location.href = waUrl;
   }
 </script>
 </body>
