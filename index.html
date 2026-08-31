@@ -16,45 +16,58 @@
       --amber-soft: #fef3c7;
       --amber-text: #92400e;
       --blue: #2563eb;
+      --green: #10b981;
       --border: #e2e8f0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text-main); display: flex; justify-content: center; padding: 20px 14px; min-height: 100vh; }
     .container { width: 100%; max-width: 420px; }
 
-    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    /* Üst Bar */
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 19px; color: var(--text-main); }
     .brand span { color: var(--red); font-size: 22px; }
     .badge { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 20px; }
 
+    /* Kart Yapısı */
     .card { background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 14px; border: 1px solid var(--border); box-shadow: 0 4px 20px -2px rgba(0,0,0,0.04); }
 
+    /* Hasta Başlık Kartı */
     .patient-card { display: flex; align-items: center; justify-content: space-between; }
-    .patient-name { font-size: 20px; font-weight: 800; color: var(--text-main); }
-    .patient-id { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .patient-name { font-size: 22px; font-weight: 800; color: var(--text-main); }
     .blood-chip { background: var(--red); color: white; padding: 6px 14px; border-radius: 12px; font-size: 16px; font-weight: 900; }
 
+    /* Kritik Uyarı Alanı */
     .alert-card { background: var(--red-soft); border: 1px solid var(--red-border); border-radius: 18px; padding: 16px; margin-bottom: 14px; }
     .alert-item { margin-bottom: 10px; }
     .alert-item:last-child { margin-bottom: 0; }
     .alert-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--red); letter-spacing: 0.5px; }
     .alert-val { font-size: 14px; font-weight: 700; color: #881337; margin-top: 2px; }
 
+    /* Müdahale Direktifi */
     .directive-card { background: var(--amber-soft); border-radius: 16px; padding: 14px; margin-bottom: 14px; color: var(--amber-text); font-size: 13px; line-height: 1.45; }
     .directive-card strong { display: flex; align-items: center; gap: 6px; font-weight: 800; margin-bottom: 4px; }
 
+    /* Detay Satırları */
     .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin: 18px 0 8px 6px; letter-spacing: 0.5px; }
     .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
     .row:last-child { border-bottom: none; }
     .label { color: var(--text-muted); }
     .val { font-weight: 600; color: var(--text-main); }
 
-    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-    .btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 10px; border-radius: 14px; font-size: 14px; font-weight: 700; text-decoration: none; }
+    /* Dinamik Kilitli İletişim Alanı */
+    .lock-banner { background: #f1f5f9; border-radius: 16px; padding: 14px; border: 1px solid var(--border); text-align: center; margin-bottom: 12px; }
+    .lock-text { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+    .progress-bar-bg { width: 100%; height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-top: 6px; }
+    .progress-bar-fill { height: 100%; width: 100%; background: var(--blue); transition: width 1s linear; }
+
+    /* Butonlar */
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 10px; border-radius: 14px; font-size: 14px; font-weight: 700; text-decoration: none; transition: all 0.2s ease; }
     .btn:active { transform: scale(0.97); }
-    .btn-ice { background: #f1f5f9; color: var(--text-main); border: 1px solid var(--border); }
-    .btn-ice span { color: var(--blue); }
-    .btn-112 { grid-column: span 2; background: var(--red); color: white; font-size: 15px; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.25); }
+    .btn-ice { background: #f8fafc; color: #94a3b8; border: 1px dashed var(--border); pointer-events: none; }
+    .btn-ice.unlocked { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; pointer-events: auto; }
+    .btn-112 { grid-column: span 2; background: var(--red); color: white; font-size: 15px; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.25); margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -65,14 +78,13 @@
     <div class="badge">ACİL KART</div>
   </div>
 
+  <!-- Hasta Adı & Kan Grubu (Kimlik No Yok) -->
   <div class="card patient-card">
-    <div>
-      <div class="patient-name" id="dispName">Ali (6 Yaş)</div>
-      <div class="patient-id" id="dispToken">Kimlik No: k8M9x2P4</div>
-    </div>
+    <div class="patient-name" id="dispName">Ali (6 Yaş)</div>
     <div class="blood-chip" id="dispBlood">A Rh+</div>
   </div>
 
+  <!-- Kritik Medikal Uyarılar -->
   <div class="alert-card">
     <div class="alert-item">
       <div class="alert-title">⚠️ Ağır / Anafilaktik Alerjiler</div>
@@ -84,11 +96,13 @@
     </div>
   </div>
 
+  <!-- İlk Müdahale Direktifi -->
   <div class="directive-card">
     <strong>⚡ İlk Müdahale Talimatı</strong>
     <span id="dispInstruction">Nefes darlığı veya anafilaktik şok belirtisinde çantasındaki EpiPen'i (0.3mg) uyluk dış yanına uygulayın. Derhal 112'yi arayın.</span>
   </div>
 
+  <!-- Klinik Bilgiler -->
   <div class="section-title">Tedavi & Cihaz Bilgisi</div>
   <div class="card">
     <div class="row">
@@ -101,38 +115,88 @@
     </div>
   </div>
 
+  <!-- Acil Durum İletişim (ICE) -->
   <div class="section-title">Acil Durum İletişim (ICE)</div>
+  
+  <div id="lockStatusBox" class="lock-banner">
+    <div class="lock-text" id="lockText">🚨 <strong>Ailenin cihazına acil bildirim gönderildi.</strong><br>İletişim kilidi açılıyor: <span id="timerText" style="font-weight: bold; color: var(--blue);">60s</span></div>
+    <div class="progress-bar-bg"><div id="timerBar" class="progress-bar-fill"></div></div>
+  </div>
+
   <div class="btn-grid">
-    <a id="dispMom" href="tel:+905528326213" class="btn btn-ice"><span>📞</span> Anne (Ara)</a>
-    <a id="dispDad" href="tel:+905528326213" class="btn btn-ice"><span>📞</span> Baba (Ara)</a>
+    <a id="dispMom" href="#" class="btn btn-ice">🔒 Anne (Bekleniyor)</a>
+    <a id="dispDad" href="#" class="btn btn-ice">🔒 Baba (Bekleniyor)</a>
     <a href="tel:112" class="btn btn-112">🚑 112 Acil Çağrı</a>
   </div>
 </div>
 
 <script>
+  let momNumber = "+905528326213";
+  let dadNumber = "+905528326213";
+  let timeLeft = 60;
+  let isUnlocked = false;
+
+  function unlockContacts() {
+    if (isUnlocked) return;
+    isUnlocked = true;
+
+    document.getElementById('lockStatusBox').style.background = '#ecfdf5';
+    document.getElementById('lockStatusBox').style.borderColor = '#a7f3d0';
+    document.getElementById('lockText').innerHTML = '✅ <strong>İletişim Açıldı:</strong> Aileyle doğrudan görüşebilirsiniz.';
+    document.getElementById('timerBar').style.display = 'none';
+
+    const momBtn = document.getElementById('dispMom');
+    momBtn.classList.add('unlocked');
+    momBtn.innerHTML = '📞 Anne (Ara)';
+    momBtn.href = 'tel:' + momNumber;
+
+    const dadBtn = document.getElementById('dispDad');
+    dadBtn.classList.add('unlocked');
+    dadBtn.innerHTML = '📞 Baba (Ara)';
+    dadBtn.href = 'tel:' + dadNumber;
+  }
+
+  // 60 Saniye Geri Sayım
+  const countdown = setInterval(() => {
+    timeLeft--;
+    document.getElementById('timerText').innerText = timeLeft + 's';
+    document.getElementById('timerBar').style.width = (timeLeft / 60 * 100) + '%';
+
+    if (timeLeft <= 0) {
+      clearInterval(countdown);
+      unlockContacts();
+    }
+  }, 1000);
+
+  // Arka Plandan Verileri Yükle & Bildirim Tetikle
   (function() {
     try {
       const parts = window.location.pathname.split('/').filter(Boolean);
       const token = parts[parts.length - 1] || "k8M9x2P4";
-      
-      if (token && token !== "t" && token !== "index.html") {
-        document.getElementById('dispToken').innerText = "Kimlik No: " + token;
-        fetch('/api/profile?token=' + encodeURIComponent(token))
-          .then(res => res.json())
-          .then(data => {
-            if (data && !data.error) {
-              if (data.childName) document.getElementById('dispName').innerText = data.childName;
-              if (data.bloodGroup) document.getElementById('dispBlood').innerText = data.bloodGroup;
-              if (data.allergies) document.getElementById('dispAllergies').innerText = data.allergies;
-              if (data.chronicCondition) document.getElementById('dispChronic').innerText = data.chronicCondition;
-              if (data.instruction) document.getElementById('dispInstruction').innerText = data.instruction;
-              if (data.medications) document.getElementById('dispMeds').innerText = data.medications;
-              if (data.motherPhone) document.getElementById('dispMom').href = "tel:" + data.motherPhone;
-              if (data.fatherPhone) document.getElementById('dispDad').href = "tel:" + data.fatherPhone;
-            }
-          })
-          .catch(() => {});
-      }
+
+      // Veliye sessiz acil durum bildirimi fırlat
+      fetch('/api/alert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token, time: new Date().toISOString() })
+      }).catch(() => {});
+
+      // Profil bilgilerini çek
+      fetch('/api/profile?token=' + encodeURIComponent(token))
+        .then(res => res.json())
+        .then(data => {
+          if (data && !data.error) {
+            if (data.childName) document.getElementById('dispName').innerText = data.childName;
+            if (data.bloodGroup) document.getElementById('dispBlood').innerText = data.bloodGroup;
+            if (data.allergies) document.getElementById('dispAllergies').innerText = data.allergies;
+            if (data.chronicCondition) document.getElementById('dispChronic').innerText = data.chronicCondition;
+            if (data.instruction) document.getElementById('dispInstruction').innerText = data.instruction;
+            if (data.medications) document.getElementById('dispMeds').innerText = data.medications;
+            if (data.motherPhone) momNumber = data.motherPhone;
+            if (data.fatherPhone) dadNumber = data.fatherPhone;
+          }
+        })
+        .catch(() => {});
     } catch(e) {}
   })();
 </script>
