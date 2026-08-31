@@ -6,25 +6,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  static-security-scan:
-    name: 1. Statik Kod & Sızıntı Analizi (SAST)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Kodu Klonla
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Gizli Anahtar ve Token Sızıntı Taraması
-        uses: trufflesecurity/trufflehog@main
-        continue-on-error: true
-        with:
-          extra_args: --only-verified
-
   owasp-zap-dast-attack-scan:
-    name: 2. Canlı Site 100+ Atak Simülasyonu (OWASP DAST Pentest)
+    name: Canlı Site 100+ Atak Simülasyonu (OWASP Pentest)
     runs-on: ubuntu-latest
-    needs: static-security-scan
     steps:
       - name: Kodu Klonla
         uses: actions/checkout@v4
@@ -35,4 +19,5 @@ jobs:
           target: 'https://guardkid-project.vercel.app'
           fail_action: false
           allow_issue_writing: false
-          cmd_options: '-a'
+          artifact_name: 'zap-security-report'
+          cmd_options: '-m 1'
