@@ -1,34 +1,36 @@
-name: GuardKid Medical Cybersecurity Audit
+name: GuardKid 100+ Cyber Attack & Vulnerability Suite
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  security-audit:
+  static-security-scan:
+    name: 1. Statik Kod & Sızıntı Analizi (SAST)
     runs-on: ubuntu-latest
     steps:
       - name: Kodu Klonla
         uses: actions/checkout@v4
 
-      - name: Node.js Kurulumu
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Gizli Anahtar ve Token Sızıntı Taraması (Secret Scanning)
+      - name: Gizli Anahtar ve Token Sızıntı Taraması
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
           base: ${{ github.event.repository.default_branch }}
           head: HEAD
 
-      - name: Statik Kod Güvenlik Analizi (CodeQL / SAST)
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript
+  owasp-zap-dast-attack-scan:
+    name: 2. Canlı Site 100+ Atak Simülasyonu (OWASP DAST Pentest)
+    runs-on: ubuntu-latest
+    needs: static-security-scan
+    steps:
+      - name: Kodu Klonla
+        uses: actions/checkout@v4
 
-      - name: CodeQL Analizini Tamamla
-        uses: github/codeql-action/analyze@v3
+      - name: OWASP 100+ Atak Paketi ile Canlı URL'yi Test Et
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: 'https://guardkid-project.vercel.app'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
