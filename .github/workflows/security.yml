@@ -12,14 +12,14 @@ jobs:
     steps:
       - name: Kodu Klonla
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Gizli Anahtar ve Token Sızıntı Taraması
         uses: trufflesecurity/trufflehog@main
         continue-on-error: true
         with:
-          path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
+          extra_args: --only-verified
 
   owasp-zap-dast-attack-scan:
     name: 2. Canlı Site 100+ Atak Simülasyonu (OWASP DAST Pentest)
