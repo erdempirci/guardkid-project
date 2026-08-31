@@ -1,11 +1,34 @@
-name: "Security Scan"
-on: [push, pull_request]
+name: GuardKid Medical Cybersecurity Audit
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
 jobs:
-  analyze:
+  security-audit:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: github/codeql-action/init@v3
-      with:
-        languages: 'javascript'
-    - uses: github/codeql-action/analyze@v3
+      - name: Kodu Klonla
+        uses: actions/checkout@v4
+
+      - name: Node.js Kurulumu
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Gizli Anahtar ve Token Sızıntı Taraması (Secret Scanning)
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+
+      - name: Statik Kod Güvenlik Analizi (CodeQL / SAST)
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+
+      - name: CodeQL Analizini Tamamla
+        uses: github/codeql-action/analyze@v3
