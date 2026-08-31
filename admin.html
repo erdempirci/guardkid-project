@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuardKid - Ebeveyn Yönetimi</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #0b1329; color: #f8fafc; display: flex; justify-content: center; padding: 16px; }
+    .container { width: 100%; max-width: 440px; background: #151f38; border-radius: 20px; padding: 20px; border: 1px solid #243456; }
+    .input-group { margin-bottom: 12px; }
+    .input-group label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 5px; }
+    .input-group input, .input-group select, .input-group textarea { width: 100%; background: #0b1329; border: 1px solid #334155; border-radius: 8px; padding: 10px; color: #fff; font-size: 14px; }
+    .btn-save { width: 100%; background: #2563eb; color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h3 style="margin-bottom: 16px; color: #38bdf8;">⚙️ Ebeveyn Medikal Düzenleme</h3>
+    <div class="input-group"><label>Hasta Adı</label><input type="text" id="name"></div>
+    <div class="input-group"><label>Kan Grubu</label><input type="text" id="blood"></div>
+    <div class="input-group"><label>Alerjiler</label><input type="text" id="allergies"></div>
+    <div class="input-group"><label>Kronik Durum</label><input type="text" id="chronic"></div>
+    <div class="input-group"><label>İlk Yardım Talimatı</label><textarea id="instruction" rows="2"></textarea></div>
+    <div class="input-group"><label>İlaçlar</label><input type="text" id="meds"></div>
+    <div class="input-group"><label>Anne Tel</label><input type="tel" id="mom"></div>
+    <div class="input-group"><label>Baba Tel</label><input type="tel" id="dad"></div>
+    <button class="btn-save" onclick="save()">💾 Değişiklikleri Kaydet</button>
+  </div>
+  <script>
+    fetch('/api/profile').then(r => r.json()).then(d => {
+      document.getElementById('name').value = d.childName;
+      document.getElementById('blood').value = d.bloodGroup;
+      document.getElementById('allergies').value = d.allergies;
+      document.getElementById('chronic').value = d.chronicCondition;
+      document.getElementById('instruction').value = d.instruction;
+      document.getElementById('meds').value = d.medications;
+      document.getElementById('mom').value = d.motherPhone;
+      document.getElementById('dad').value = d.fatherPhone;
+    });
+    function save() {
+      fetch('/api/profile', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          childName: document.getElementById('name').value,
+          bloodGroup: document.getElementById('blood').value,
+          allergies: document.getElementById('allergies').value,
+          chronicCondition: document.getElementById('chronic').value,
+          instruction: document.getElementById('instruction').value,
+          medications: document.getElementById('meds').value,
+          motherPhone: document.getElementById('mom').value,
+          fatherPhone: document.getElementById('dad').value
+        })
+      }).then(() => alert('✅ Medikal profil güncellendi!'));
+    }
+  </script>
+</body>
+</html>
