@@ -1,7 +1,8 @@
 {
   "rewrites": [
     { "source": "/", "destination": "/profile.html" },
+    { "source": "/app", "destination": "/app.html" },
     { "source": "/t/:token", "destination": "/profile.html" },
-    { "source": "/api/alert", "destination": "/api/alert.js" }
+    { "source": "/api/profile", "destination": "/api/profile.js" }
   ]
 }
