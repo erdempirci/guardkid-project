@@ -16,26 +16,25 @@
       --amber-soft: #fef3c7;
       --amber-text: #92400e;
       --blue: #2563eb;
-      --green: #10b981;
       --border: #e2e8f0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text-main); display: flex; justify-content: center; padding: 16px 14px; min-height: 100vh; }
     .container { width: 100%; max-width: 420px; }
 
-    /* Üst Bar & Son Güncelleme Rozeti */
+    /* Üst Bar & Doğrulama Rozeti */
     .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
     .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 19px; color: var(--text-main); }
     .brand span { color: var(--red); font-size: 22px; }
-    .verified-badge { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; }
+    .verified-badge { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
 
     /* Kart Yapısı */
     .card { background: var(--card-bg); border-radius: 18px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
 
     /* Hasta Başlık Kartı */
     .patient-card { display: flex; align-items: center; justify-content: space-between; }
-    .patient-name { font-size: 22px; font-weight: 800; color: var(--text-main); }
-    .patient-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .patient-name { font-size: 22px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+    .patient-meta { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
     .blood-chip { background: var(--red); color: white; padding: 6px 14px; border-radius: 12px; font-size: 16px; font-weight: 900; }
 
     /* Kritik Uyarı Alanı */
@@ -46,7 +45,7 @@
     .alert-val { font-size: 14px; font-weight: 700; color: #881337; margin-top: 2px; }
 
     /* Müdahale Direktifi */
-    .directive-card { background: var(--amber-soft); border-radius: 14px; padding: 12px 14px; margin-bottom: 12px; color: var(--amber-text); font-size: 13px; line-height: 1.4; }
+    .directive-card { background: var(--amber-soft); border-radius: 14px; padding: 12px 14px; margin-bottom: 12px; color: var(--amber-text); font-size: 13px; line-height: 1.45; }
     .directive-card strong { display: flex; align-items: center; gap: 6px; font-weight: 800; margin-bottom: 4px; }
 
     /* Detay Satırları */
@@ -64,7 +63,7 @@
     .btn-112 { grid-column: span 2; background: var(--red); color: white; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 800; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25); margin-top: 8px; }
 
     /* Şeffaf Overlay Katmanı */
-    .countdown-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 58px; background: rgba(15, 23, 42, 0.78); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; border-radius: 12px; z-index: 10; color: #ffffff; text-align: center; padding: 10px; transition: opacity 0.3s ease; }
+    .countdown-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 58px; background: rgba(15, 23, 42, 0.82); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; border-radius: 12px; z-index: 10; color: #ffffff; text-align: center; padding: 10px; }
     .overlay-content { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; }
     .timer-circle { background: #ef4444; color: white; font-weight: 800; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
   </style>
@@ -72,19 +71,16 @@
 <body>
 
 <div class="container">
-  <!-- Üst Bar & Doğrulama Rozeti -->
   <div class="header">
     <div class="brand"><span>⚕️</span> Medical ID</div>
-    <div class="verified-badge" id="dispUpdateBadge">
-      ● Güncel Veri (Ağu 2026)
-    </div>
+    <div class="verified-badge" id="dispUpdateBadge">● Güncel Veri (Ağu 2026)</div>
   </div>
 
-  <!-- Hasta Adı & Kan Grubu -->
+  <!-- Hasta Adı, Yaş, Kilo & Kan Grubu -->
   <div class="card patient-card">
     <div>
-      <div class="patient-name" id="dispName">Ali (6 Yaş)</div>
-      <div class="patient-subtitle" id="dispSubtitle">Tıbbi Acil Durum Profili</div>
+      <div class="patient-name" id="dispName">Ali</div>
+      <div class="patient-meta" id="dispMeta">6 Yaş • 22 kg</div>
     </div>
     <div class="blood-chip" id="dispBlood">A Rh+</div>
   </div>
@@ -116,7 +112,7 @@
     </div>
     <div class="row">
       <span class="label">Medikal Cihaz / İmplant</span>
-      <span class="val">Sürekli Glikoz Monitörü (CGM)</span>
+      <span class="val" id="dispDevice">Sürekli Glikoz Monitörü (CGM)</span>
     </div>
   </div>
 
@@ -124,7 +120,6 @@
   <div class="section-title">Acil Durum İletişim (ICE)</div>
   
   <div class="contact-container">
-    <!-- Şeffaf Geri Sayım Katmanı (Butonların Üzerinde) -->
     <div id="countdownOverlay" class="countdown-overlay">
       <div class="overlay-content">
         <div class="timer-circle" id="timerCircle">60s</div>
@@ -135,7 +130,6 @@
       </div>
     </div>
 
-    <!-- İletişim Butonları -->
     <div class="btn-grid">
       <a id="dispMom" href="tel:+905528326213" class="btn-contact">📞 Anne (Ara)</a>
       <a id="dispDad" href="tel:+905528326213" class="btn-contact">📞 Baba (Ara)</a>
@@ -146,52 +140,52 @@
 
 <script>
   let timeLeft = 60;
-
-  // 60 Saniyelik Overlay Geri Sayımı
   const timer = setInterval(() => {
     timeLeft--;
     const circle = document.getElementById('timerCircle');
     if (circle) circle.innerText = timeLeft + 's';
-
     if (timeLeft <= 0) {
       clearInterval(timer);
       const overlay = document.getElementById('countdownOverlay');
-      if (overlay) overlay.style.display = 'none'; // Süre bitince kilit katmanı kalkar
+      if (overlay) overlay.style.display = 'none';
     }
   }, 1000);
 
-  // Arka Plandan Verileri Yükle & Bildirim Tetikle
   (function() {
     try {
       const parts = window.location.pathname.split('/').filter(Boolean);
       const token = parts[parts.length - 1] || "k8M9x2P4";
 
-      // Veliye anında arka plan bildirimi fırlat
       fetch('/api/alert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: token, time: new Date().toISOString() })
       }).catch(() => {});
 
-      // Profil verisini çek
       fetch('/api/profile?token=' + encodeURIComponent(token))
         .then(res => res.json())
         .then(data => {
           if (data && !data.error) {
             if (data.childName) document.getElementById('dispName').innerText = data.childName;
+            
+            // Yaş ve Kilo Birleştirme
+            const ageText = data.age ? `${data.age} Yaş` : '6 Yaş';
+            const weightText = data.weight ? `${data.weight} kg` : '22 kg';
+            document.getElementById('dispMeta').innerText = `${ageText} • ${weightText}`;
+
             if (data.bloodGroup) document.getElementById('dispBlood').innerText = data.bloodGroup;
             if (data.allergies) document.getElementById('dispAllergies').innerText = data.allergies;
             if (data.chronicCondition) document.getElementById('dispChronic').innerText = data.chronicCondition;
             if (data.instruction) document.getElementById('dispInstruction').innerText = data.instruction;
             if (data.medications) document.getElementById('dispMeds').innerText = data.medications;
+            if (data.device) document.getElementById('dispDevice').innerText = data.device;
             if (data.motherPhone) document.getElementById('dispMom').href = "tel:" + data.motherPhone;
             if (data.fatherPhone) document.getElementById('dispDad').href = "tel:" + data.fatherPhone;
             
-            // Güncelleme Tarihi Kontrolü
             if (data.updatedAt) {
-              const date = new Date(data.updatedAt);
-              const formatted = date.toLocaleDateString('tr-TR', { month: 'short', year: 'numeric' });
-              document.getElementById('dispUpdateBadge').innerText = `● Güncel Veri (${formatted})`;
+              const d = new Date(data.updatedAt);
+              const fmt = d.toLocaleDateString('tr-TR', { month: 'short', year: 'numeric' });
+              document.getElementById('dispUpdateBadge').innerText = `● Güncel Veri (${fmt})`;
             }
           }
         })
