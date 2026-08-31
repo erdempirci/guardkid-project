@@ -2,8 +2,7 @@
   "cleanUrls": true,
   "rewrites": [
     { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/t/:token", "destination": "/profile.html" },
-    { "source": "/api/profile", "destination": "/api/profile.js" },
-    { "source": "/", "destination": "/profile.html" }
+    { "source": "/t/:token", "destination": "/index.html" },
+    { "source": "/api/profile", "destination": "/api/profile.js" }
   ]
 }
