@@ -20,67 +20,72 @@
       --border: #e2e8f0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text-main); display: flex; justify-content: center; padding: 20px 14px; min-height: 100vh; }
+    body { background: var(--bg); color: var(--text-main); display: flex; justify-content: center; padding: 16px 14px; min-height: 100vh; }
     .container { width: 100%; max-width: 420px; }
 
-    /* Üst Bar */
-    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    /* Üst Bar & Son Güncelleme Rozeti */
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
     .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 19px; color: var(--text-main); }
     .brand span { color: var(--red); font-size: 22px; }
-    .badge { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 20px; }
+    .verified-badge { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; }
 
     /* Kart Yapısı */
-    .card { background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 14px; border: 1px solid var(--border); box-shadow: 0 4px 20px -2px rgba(0,0,0,0.04); }
+    .card { background: var(--card-bg); border-radius: 18px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
 
     /* Hasta Başlık Kartı */
     .patient-card { display: flex; align-items: center; justify-content: space-between; }
     .patient-name { font-size: 22px; font-weight: 800; color: var(--text-main); }
+    .patient-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
     .blood-chip { background: var(--red); color: white; padding: 6px 14px; border-radius: 12px; font-size: 16px; font-weight: 900; }
 
     /* Kritik Uyarı Alanı */
-    .alert-card { background: var(--red-soft); border: 1px solid var(--red-border); border-radius: 18px; padding: 16px; margin-bottom: 14px; }
-    .alert-item { margin-bottom: 10px; }
+    .alert-card { background: var(--red-soft); border: 1px solid var(--red-border); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+    .alert-item { margin-bottom: 8px; }
     .alert-item:last-child { margin-bottom: 0; }
     .alert-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--red); letter-spacing: 0.5px; }
     .alert-val { font-size: 14px; font-weight: 700; color: #881337; margin-top: 2px; }
 
     /* Müdahale Direktifi */
-    .directive-card { background: var(--amber-soft); border-radius: 16px; padding: 14px; margin-bottom: 14px; color: var(--amber-text); font-size: 13px; line-height: 1.45; }
+    .directive-card { background: var(--amber-soft); border-radius: 14px; padding: 12px 14px; margin-bottom: 12px; color: var(--amber-text); font-size: 13px; line-height: 1.4; }
     .directive-card strong { display: flex; align-items: center; gap: 6px; font-weight: 800; margin-bottom: 4px; }
 
     /* Detay Satırları */
-    .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin: 18px 0 8px 6px; letter-spacing: 0.5px; }
-    .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+    .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin: 14px 0 6px 4px; letter-spacing: 0.5px; }
+    .row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
     .row:last-child { border-bottom: none; }
     .label { color: var(--text-muted); }
     .val { font-weight: 600; color: var(--text-main); }
 
-    /* Dinamik Kilitli İletişim Alanı */
-    .lock-banner { background: #f1f5f9; border-radius: 16px; padding: 14px; border: 1px solid var(--border); text-align: center; margin-bottom: 12px; }
-    .lock-text { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
-    .progress-bar-bg { width: 100%; height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-top: 6px; }
-    .progress-bar-fill { height: 100%; width: 100%; background: var(--blue); transition: width 1s linear; }
+    /* Gömülü Şeffaf Geri Sayımlı İletişim Alanı */
+    .contact-container { position: relative; border-radius: 14px; overflow: hidden; margin-top: 4px; }
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    
+    .btn-contact { background: #eff6ff; color: var(--blue); border: 1px solid #bfdbfe; padding: 14px 8px; border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-112 { grid-column: span 2; background: var(--red); color: white; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 800; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25); margin-top: 8px; }
 
-    /* Butonlar */
-    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 10px; border-radius: 14px; font-size: 14px; font-weight: 700; text-decoration: none; transition: all 0.2s ease; }
-    .btn:active { transform: scale(0.97); }
-    .btn-ice { background: #f8fafc; color: #94a3b8; border: 1px dashed var(--border); pointer-events: none; }
-    .btn-ice.unlocked { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; pointer-events: auto; }
-    .btn-112 { grid-column: span 2; background: var(--red); color: white; font-size: 15px; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.25); margin-top: 10px; }
+    /* Şeffaf Overlay Katmanı */
+    .countdown-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 58px; background: rgba(15, 23, 42, 0.78); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; border-radius: 12px; z-index: 10; color: #ffffff; text-align: center; padding: 10px; transition: opacity 0.3s ease; }
+    .overlay-content { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; }
+    .timer-circle { background: #ef4444; color: white; font-weight: 800; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
   </style>
 </head>
 <body>
 
 <div class="container">
+  <!-- Üst Bar & Doğrulama Rozeti -->
   <div class="header">
     <div class="brand"><span>⚕️</span> Medical ID</div>
-    <div class="badge">ACİL KART</div>
+    <div class="verified-badge" id="dispUpdateBadge">
+      ● Güncel Veri (Ağu 2026)
+    </div>
   </div>
 
-  <!-- Hasta Adı & Kan Grubu (Kimlik No Yok) -->
+  <!-- Hasta Adı & Kan Grubu -->
   <div class="card patient-card">
-    <div class="patient-name" id="dispName">Ali (6 Yaş)</div>
+    <div>
+      <div class="patient-name" id="dispName">Ali (6 Yaş)</div>
+      <div class="patient-subtitle" id="dispSubtitle">Tıbbi Acil Durum Profili</div>
+    </div>
     <div class="blood-chip" id="dispBlood">A Rh+</div>
   </div>
 
@@ -118,53 +123,40 @@
   <!-- Acil Durum İletişim (ICE) -->
   <div class="section-title">Acil Durum İletişim (ICE)</div>
   
-  <div id="lockStatusBox" class="lock-banner">
-    <div class="lock-text" id="lockText">🚨 <strong>Ailenin cihazına acil bildirim gönderildi.</strong><br>İletişim kilidi açılıyor: <span id="timerText" style="font-weight: bold; color: var(--blue);">60s</span></div>
-    <div class="progress-bar-bg"><div id="timerBar" class="progress-bar-fill"></div></div>
-  </div>
+  <div class="contact-container">
+    <!-- Şeffaf Geri Sayım Katmanı (Butonların Üzerinde) -->
+    <div id="countdownOverlay" class="countdown-overlay">
+      <div class="overlay-content">
+        <div class="timer-circle" id="timerCircle">60s</div>
+        <div style="text-align: left; line-height: 1.2;">
+          <span style="font-size: 11px; opacity: 0.85;">Ailenin cihazına acil bildirim iletildi.</span><br>
+          <strong style="color: #f8fafc; font-size: 12px;">Numaralar açılıyor...</strong>
+        </div>
+      </div>
+    </div>
 
-  <div class="btn-grid">
-    <a id="dispMom" href="#" class="btn btn-ice">🔒 Anne (Bekleniyor)</a>
-    <a id="dispDad" href="#" class="btn btn-ice">🔒 Baba (Bekleniyor)</a>
-    <a href="tel:112" class="btn btn-112">🚑 112 Acil Çağrı</a>
+    <!-- İletişim Butonları -->
+    <div class="btn-grid">
+      <a id="dispMom" href="tel:+905528326213" class="btn-contact">📞 Anne (Ara)</a>
+      <a id="dispDad" href="tel:+905528326213" class="btn-contact">📞 Baba (Ara)</a>
+      <a href="tel:112" class="btn-112">🚑 112 Acil Çağrı</a>
+    </div>
   </div>
 </div>
 
 <script>
-  let momNumber = "+905528326213";
-  let dadNumber = "+905528326213";
   let timeLeft = 60;
-  let isUnlocked = false;
 
-  function unlockContacts() {
-    if (isUnlocked) return;
-    isUnlocked = true;
-
-    document.getElementById('lockStatusBox').style.background = '#ecfdf5';
-    document.getElementById('lockStatusBox').style.borderColor = '#a7f3d0';
-    document.getElementById('lockText').innerHTML = '✅ <strong>İletişim Açıldı:</strong> Aileyle doğrudan görüşebilirsiniz.';
-    document.getElementById('timerBar').style.display = 'none';
-
-    const momBtn = document.getElementById('dispMom');
-    momBtn.classList.add('unlocked');
-    momBtn.innerHTML = '📞 Anne (Ara)';
-    momBtn.href = 'tel:' + momNumber;
-
-    const dadBtn = document.getElementById('dispDad');
-    dadBtn.classList.add('unlocked');
-    dadBtn.innerHTML = '📞 Baba (Ara)';
-    dadBtn.href = 'tel:' + dadNumber;
-  }
-
-  // 60 Saniye Geri Sayım
-  const countdown = setInterval(() => {
+  // 60 Saniyelik Overlay Geri Sayımı
+  const timer = setInterval(() => {
     timeLeft--;
-    document.getElementById('timerText').innerText = timeLeft + 's';
-    document.getElementById('timerBar').style.width = (timeLeft / 60 * 100) + '%';
+    const circle = document.getElementById('timerCircle');
+    if (circle) circle.innerText = timeLeft + 's';
 
     if (timeLeft <= 0) {
-      clearInterval(countdown);
-      unlockContacts();
+      clearInterval(timer);
+      const overlay = document.getElementById('countdownOverlay');
+      if (overlay) overlay.style.display = 'none'; // Süre bitince kilit katmanı kalkar
     }
   }, 1000);
 
@@ -174,14 +166,14 @@
       const parts = window.location.pathname.split('/').filter(Boolean);
       const token = parts[parts.length - 1] || "k8M9x2P4";
 
-      // Veliye sessiz acil durum bildirimi fırlat
+      // Veliye anında arka plan bildirimi fırlat
       fetch('/api/alert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: token, time: new Date().toISOString() })
       }).catch(() => {});
 
-      // Profil bilgilerini çek
+      // Profil verisini çek
       fetch('/api/profile?token=' + encodeURIComponent(token))
         .then(res => res.json())
         .then(data => {
@@ -192,8 +184,15 @@
             if (data.chronicCondition) document.getElementById('dispChronic').innerText = data.chronicCondition;
             if (data.instruction) document.getElementById('dispInstruction').innerText = data.instruction;
             if (data.medications) document.getElementById('dispMeds').innerText = data.medications;
-            if (data.motherPhone) momNumber = data.motherPhone;
-            if (data.fatherPhone) dadNumber = data.fatherPhone;
+            if (data.motherPhone) document.getElementById('dispMom').href = "tel:" + data.motherPhone;
+            if (data.fatherPhone) document.getElementById('dispDad').href = "tel:" + data.fatherPhone;
+            
+            // Güncelleme Tarihi Kontrolü
+            if (data.updatedAt) {
+              const date = new Date(data.updatedAt);
+              const formatted = date.toLocaleDateString('tr-TR', { month: 'short', year: 'numeric' });
+              document.getElementById('dispUpdateBadge').innerText = `● Güncel Veri (${formatted})`;
+            }
           }
         })
         .catch(() => {});
