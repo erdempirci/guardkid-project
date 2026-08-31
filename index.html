@@ -1,132 +1,16 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Medical ID - Acil Sağlık Kartı</title>
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --red: #e11d48;
-      --red-soft: #ffe4e6;
-      --red-border: #fecdd3;
-      --amber-soft: #fef3c7;
-      --amber-text: #92400e;
-      --blue: #2563eb;
-      --border: #e2e8f0;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text-main); display: flex; justify-content: center; padding: 20px 14px; min-height: 100vh; }
-    .container { width: 100%; max-width: 420px; }
-
-    /* Üst Bar */
-    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 19px; color: var(--text-main); }
-    .brand span { color: var(--red); font-size: 22px; }
-    .badge { background: var(--red-soft); color: var(--red); font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 20px; }
-
-    /* Kart Yapısı */
-    .card { background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 14px; border: 1px solid var(--border); box-shadow: 0 4px 20px -2px rgba(0,0,0,0.04); }
-
-    /* Hasta Başlık Kartı */
-    .patient-card { display: flex; align-items: center; justify-content: space-between; }
-    .patient-name { font-size: 20px; font-weight: 800; color: var(--text-main); }
-    .patient-id { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .blood-chip { background: var(--red); color: white; padding: 6px 14px; border-radius: 12px; font-size: 16px; font-weight: 900; }
-
-    /* Kritik Uyarı Alanı */
-    .alert-card { background: var(--red-soft); border: 1px solid var(--red-border); border-radius: 18px; padding: 16px; margin-bottom: 14px; }
-    .alert-item { margin-bottom: 10px; }
-    .alert-item:last-child { margin-bottom: 0; }
-    .alert-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--red); letter-spacing: 0.5px; }
-    .alert-val { font-size: 14px; font-weight: 700; color: #881337; margin-top: 2px; }
-
-    /* Müdahale Direktifi */
-    .directive-card { background: var(--amber-soft); border-radius: 16px; padding: 14px; margin-bottom: 14px; color: var(--amber-text); font-size: 13px; line-height: 1.45; }
-    .directive-card strong { display: flex; align-items: center; gap: 6px; font-weight: 800; margin-bottom: 4px; }
-
-    /* Detay Satırları */
-    .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin: 18px 0 8px 6px; letter-spacing: 0.5px; }
-    .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
-    .row:last-child { border-bottom: none; }
-    .label { color: var(--text-muted); }
-    .val { font-weight: 600; color: var(--text-main); }
-
-    /* Butonlar */
-    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-    .btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 10px; border-radius: 14px; font-size: 14px; font-weight: 700; text-decoration: none; transition: transform 0.1s ease; }
-    .btn:active { transform: scale(0.97); }
-    .btn-ice { background: #f1f5f9; color: var(--text-main); border: 1px solid var(--border); }
-    .btn-ice span { color: var(--blue); }
-    .btn-112 { grid-column: span 2; background: var(--red); color: white; font-size: 15px; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.25); }
-  </style>
-</head>
-<body>
-
-<div class="container">
-  <!-- Üst Bar -->
-  <div class="header">
-    <div class="brand"><span>⚕️</span> Medical ID</div>
-    <div class="badge">ACİL KART</div>
-  </div>
-
-  <!-- Hasta Özeti -->
-  <div class="card patient-card">
-    <div>
-      <div class="patient-name" id="dispName">Ali (6 Yaş)</div>
-      <div class="patient-id" id="dispToken">Kimlik No: GK-8492</div>
-    </div>
-    <div class="blood-chip" id="dispBlood">A Rh+</div>
-  </div>
-
-  <!-- Kritik Medikal Uyarılar -->
-  <div class="alert-card">
-    <div class="alert-item">
-      <div class="alert-title">⚠️ Ağır / Anafilaktik Alerjiler</div>
-      <div class="alert-val" id="dispAllergies">Penisilin, Yer Fıstığı</div>
-    </div>
-    <div class="alert-item" style="margin-top: 8px;">
-      <div class="alert-title">🩺 Kronik Rahatsızlık</div>
-      <div class="alert-val" id="dispChronic">Tip-1 Diyabet (İnsülin)</div>
-    </div>
-  </div>
-
-  <!-- İlk Müdahale Direktifi -->
-  <div class="directive-card">
-    <strong>⚡ İlk Müdahale Talimatı</strong>
-    <span id="dispInstruction">Bilinç kapalıysa veya nefes darlığı varsa çantasındaki EpiPen oto-enjektörünü uyluk dış yanına uygulayın. Derhal 112'yi arayın.</span>
-  </div>
-
-  <!-- Klinik Bilgiler -->
-  <div class="section-title">Tedavi & Cihaz Bilgisi</div>
-  <div class="card">
-    <div class="row">
-      <span class="label">Kullandığı İlaçlar</span>
-      <span class="val" id="dispMeds">Lantus İnsülin</span>
-    </div>
-    <div class="row">
-      <span class="label">Medikal Cihaz / İmplant</span>
-      <span class="val">Sürekli Glikoz Monitörü (CGM)</span>
-    </div>
-  </div>
-
-  <!-- Acil Durum Arama (ICE) -->
-  <div class="section-title">Acil Durum İletişim (ICE)</div>
-  <div class="btn-grid">
-    <a id="dispMom" href="tel:+905528326213" class="btn btn-ice"><span>📞</span> Anne (Ara)</a>
-    <a id="dispDad" href="tel:+905528326213" class="btn btn-ice"><span>📞</span> Baba (Ara)</a>
-    <a href="tel:112" class="btn btn-112">🚑 112 Acil Çağrı</a>
-  </div>
-</div>
-
 <script>
-  fetch('/api/profile')
-    .then(r => r.json())
+  // URL'deki rastgele token'ı al (/t/k8M9x2P4 ise k8M9x2P4'ü çeker)
+  const pathParts = window.location.pathname.split('/');
+  const token = pathParts.includes('t') ? pathParts[pathParts.indexOf('t') + 1] : 'k8M9x2P4';
+
+  fetch(`/api/profile?token=${token}`)
+    .then(r => {
+      if(!r.ok) throw new Error();
+      return r.json();
+    })
     .then(d => {
       if (d) {
+        document.getElementById('dispToken').innerText = `Kimlik No: ${d.token || token}`;
         if (d.childName) document.getElementById('dispName').innerText = d.childName;
         if (d.bloodGroup) document.getElementById('dispBlood').innerText = d.bloodGroup;
         if (d.allergies) document.getElementById('dispAllergies').innerText = d.allergies;
@@ -137,7 +21,8 @@
         if (d.fatherPhone) document.getElementById('dispDad').href = `tel:${d.fatherPhone}`;
       }
     })
-    .catch(() => {});
+    .catch(() => {
+      document.getElementById('dispName').innerText = "Geçersiz Bileklik";
+      document.getElementById('dispInstruction').innerText = "Bu bileklik kodu sistemde bulunamadı.";
+    });
 </script>
-</body>
-</html>
