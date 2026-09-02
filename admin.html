@@ -9,6 +9,11 @@
     body { background: #f8fafc; color: #0f172a; display: flex; justify-content: center; padding: 16px; min-height: 100vh; }
     .container { width: 100%; max-width: 440px; background: #ffffff; border-radius: 20px; padding: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
     h3 { margin-bottom: 16px; color: #0f172a; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+    
+    .avatar-upload { text-align: center; margin-bottom: 16px; }
+    .avatar-preview { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid #2563eb; margin-bottom: 8px; display: inline-block; background: #e2e8f0; }
+    .upload-btn { background: #f1f5f9; color: #1e293b; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-block; border: 1px solid #cbd5e1; }
+    
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .input-group { margin-bottom: 12px; }
     .input-group label { display: block; font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 4px; }
@@ -20,6 +25,15 @@
 <body>
   <div class="container">
     <h3>⚙️ Ebeveyn Sağlık Paneli</h3>
+
+    <!-- Biyometrik Fotoğraf Yükleyici -->
+    <div class="avatar-upload">
+      <img id="previewPhoto" class="avatar-preview" src="https://images.unsplash.com/photo-1543332164-6e82f355badc?w=150&auto=format&fit=crop&q=80">
+      <div>
+        <label for="photoInput" class="upload-btn">📸 Çocuğun Fotoğrafını Seç</label>
+        <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+      </div>
+    </div>
 
     <div class="input-group">
       <label>Çocuğun Adı</label>
@@ -78,12 +92,30 @@
       </div>
     </div>
 
+    <div class="input-group">
+      <label>🔒 Ebeveyn Yönetim PIN Kodu (Varsayılan: 8492)</label>
+      <input type="password" id="pin" placeholder="PIN Kodunuz">
+    </div>
+
     <button class="btn-save" onclick="save()">💾 Değişiklikleri Doğrula & Kaydet</button>
   </div>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token') || 'k8M9x2P4';
+    let currentPhoto = "";
+
+    function handlePhotoUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(uploadEvent) {
+          currentPhoto = uploadEvent.target.result;
+          document.getElementById('previewPhoto').src = currentPhoto;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
 
     fetch(`/api/profile?token=${token}`).then(r => r.json()).then(d => {
       if(d && !d.error) {
@@ -98,6 +130,10 @@
         document.getElementById('device').value = d.device || '';
         document.getElementById('mom').value = d.motherPhone || '';
         document.getElementById('dad').value = d.fatherPhone || '';
+        if (d.photo) {
+          currentPhoto = d.photo;
+          document.getElementById('previewPhoto').src = d.photo;
+        }
       }
     });
 
@@ -107,6 +143,8 @@
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           token: token,
+          pin: document.getElementById('pin').value || '8492',
+          photo: currentPhoto,
           childName: document.getElementById('name').value,
           age: document.getElementById('age').value,
           weight: document.getElementById('weight').value,
@@ -120,7 +158,15 @@
           fatherPhone: document.getElementById('dad').value,
           updatedAt: new Date().toISOString()
         })
-      }).then(() => alert('✅ Medikal profil ve doğrulama tarihi güncellendi!'));
+      })
+      .then(r => r.json())
+      .then(res => {
+        if(res.success) {
+          alert('✅ Medikal profil, biyometrik fotoğraf ve doğrulama tarihi güncellendi!');
+        } else {
+          alert('❌ Hata: ' + (res.error || 'Güncellenemedi'));
+        }
+      });
     }
   </script>
 </body>
