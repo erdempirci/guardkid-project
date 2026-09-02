@@ -14,12 +14,9 @@
     }
   ],
   "rewrites": [
-    { "source": "/yoklama", "destination": "/attendance.html" },
-    { "source": "/admin", "destination": "/admin.html" },
     { "source": "/t/:token", "destination": "/index.html" },
     { "source": "/api/profile", "destination": "/api/profile.js" },
     { "source": "/api/alert", "destination": "/api/alert.js" },
-    { "source": "/api/attendance", "destination": "/api/attendance.js" },
-    { "source": "/", "destination": "/index.html" }
+    { "source": "/api/attendance", "destination": "/api/attendance.js" }
   ]
 }
