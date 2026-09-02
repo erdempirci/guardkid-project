@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Medical ID - Acil Sağlık Kartı</title>
+  <title>GuardKid - Acil Sağlık Kartı</title>
   <style>
     :root {
       --bg: #f8fafc;
@@ -31,11 +31,13 @@
     /* Kart Yapısı */
     .card { background: var(--card-bg); border-radius: 18px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
 
-    /* Hasta Başlık Kartı */
-    .patient-card { display: flex; align-items: center; justify-content: space-between; }
-    .patient-name { font-size: 22px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+    /* Hasta Başlık Kartı & Fotoğraf Doğrulama */
+    .patient-card { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .patient-info-group { display: flex; align-items: center; gap: 12px; }
+    .patient-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.06); background: #e2e8f0; flex-shrink: 0; }
+    .patient-name { font-size: 20px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
     .patient-meta { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
-    .blood-chip { background: var(--red); color: white; padding: 6px 14px; border-radius: 12px; font-size: 16px; font-weight: 900; }
+    .blood-chip { background: var(--red); color: white; padding: 6px 14px; border-radius: 12px; font-size: 16px; font-weight: 900; flex-shrink: 0; }
 
     /* Kritik Uyarı Alanı */
     .alert-card { background: var(--red-soft); border: 1px solid var(--red-border); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
@@ -63,24 +65,27 @@
     .btn-112 { grid-column: span 2; background: var(--red); color: white; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 800; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25); margin-top: 8px; }
 
     /* Şeffaf Overlay Katmanı */
-    .countdown-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 58px; background: rgba(15, 23, 42, 0.82); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; border-radius: 12px; z-index: 10; color: #ffffff; text-align: center; padding: 10px; }
+    .countdown-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 58px; background: rgba(15, 23, 42, 0.84); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; border-radius: 12px; z-index: 10; color: #ffffff; text-align: center; padding: 10px; }
     .overlay-content { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; }
-    .timer-circle { background: #ef4444; color: white; font-weight: 800; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+    .timer-circle { background: #ef4444; color: white; font-weight: 800; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
   </style>
 </head>
 <body>
 
 <div class="container">
   <div class="header">
-    <div class="brand"><span>⚕️</span> Medical ID</div>
-    <div class="verified-badge" id="dispUpdateBadge">● Güncel Veri (Ağu 2026)</div>
+    <div class="brand"><span>⚕️</span> GuardKid ID</div>
+    <div class="verified-badge" id="dispUpdateBadge">● Güncel Veri (Eylül 2026)</div>
   </div>
 
-  <!-- Hasta Adı, Yaş, Kilo & Kan Grubu -->
+  <!-- Fotoğraf Doğrulamalı Hasta Kartı -->
   <div class="card patient-card">
-    <div>
-      <div class="patient-name" id="dispName">Ali</div>
-      <div class="patient-meta" id="dispMeta">6 Yaş • 22 kg</div>
+    <div class="patient-info-group">
+      <img id="dispPhoto" src="https://images.unsplash.com/photo-1543332164-6e82f355badc?w=150&auto=format&fit=crop&q=80" alt="Çocuk Vesikalık" class="patient-avatar">
+      <div>
+        <div class="patient-name" id="dispName">Ali</div>
+        <div class="patient-meta" id="dispMeta">6 Yaş • 22 kg</div>
+      </div>
     </div>
     <div class="blood-chip" id="dispBlood">A Rh+</div>
   </div>
@@ -151,24 +156,58 @@
     }
   }, 1000);
 
+  // GPS Konumunu Sessizce Alıp Ebeveyne Gönder
+  function sendEmergencyAlert(token) {
+    const payload = {
+      token: token,
+      timestamp: new Date().toISOString()
+    };
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          payload.latitude = pos.coords.latitude;
+          payload.longitude = pos.coords.longitude;
+          payload.mapsUrl = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+          
+          fetch('/api/alert', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          }).catch(() => {});
+        },
+        () => {
+          fetch('/api/alert', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          }).catch(() => {});
+        },
+        { timeout: 8000, enableHighAccuracy: true }
+      );
+    } else {
+      fetch('/api/alert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(() => {});
+    }
+  }
+
   (function() {
     try {
       const parts = window.location.pathname.split('/').filter(Boolean);
       const token = parts[parts.length - 1] || "k8M9x2P4";
 
-      fetch('/api/alert', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: token, time: new Date().toISOString() })
-      }).catch(() => {});
+      sendEmergencyAlert(token);
 
       fetch('/api/profile?token=' + encodeURIComponent(token))
         .then(res => res.json())
         .then(data => {
           if (data && !data.error) {
             if (data.childName) document.getElementById('dispName').innerText = data.childName;
+            if (data.photo) document.getElementById('dispPhoto').src = data.photo;
             
-            // Yaş ve Kilo Birleştirme
             const ageText = data.age ? `${data.age} Yaş` : '6 Yaş';
             const weightText = data.weight ? `${data.weight} kg` : '22 kg';
             document.getElementById('dispMeta').innerText = `${ageText} • ${weightText}`;
