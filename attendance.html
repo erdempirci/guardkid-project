@@ -22,17 +22,16 @@
     .title { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
     .status-badge { background: var(--green-soft); color: var(--green); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
 
-    .scanner-box { background: var(--card-bg); border: 2px dashed var(--blue); border-radius: 16px; padding: 24px 16px; text-align: center; margin-bottom: 16px; }
-    .nfc-icon { font-size: 40px; margin-bottom: 8px; display: block; animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-    
+    .scanner-box { background: var(--card-bg); border: 2px dashed var(--blue); border-radius: 16px; padding: 20px 16px; text-align: center; margin-bottom: 16px; }
     .btn-action { background: var(--blue); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; font-size: 15px; }
     .manual-input { display: flex; gap: 8px; margin-top: 10px; }
     .manual-input input { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
     .manual-input button { background: #334155; color: white; border: none; padding: 0 16px; border-radius: 8px; font-weight: 600; cursor: pointer; }
 
     .list-title { font-size: 13px; font-weight: 800; text-transform: uppercase; color: #64748b; margin: 16px 0 8px 4px; }
-    .log-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+    .log-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+    .log-left { display: flex; align-items: center; gap: 10px; }
+    .student-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: #cbd5e1; }
     .log-name { font-weight: 700; font-size: 15px; }
     .log-meta { font-size: 12px; color: #64748b; margin-top: 2px; }
     .log-time { font-weight: 800; color: var(--green); background: var(--green-soft); padding: 4px 8px; border-radius: 8px; font-size: 13px; }
@@ -47,12 +46,11 @@
   </div>
 
   <div class="scanner-box">
-    <span class="nfc-icon">📡</span>
-    <h3 style="font-size: 17px; margin-bottom: 4px;">NFC Bilekliği Dokundurun</h3>
-    <p style="font-size: 13px; color: #64748b;">(Android telefonlarda NFC otomatik yakalar)</p>
+    <div style="font-size: 36px; margin-bottom: 4px;">📡</div>
+    <h3 style="font-size: 16px;">NFC Bilekliği Dokundurun</h3>
+    <p style="font-size: 12px; color: #64748b; margin-top: 2px;">(Destekleyen Android cihazlarda Web NFC)</p>
     <button class="btn-action" onclick="startWebNFC()">📲 NFC Okuyucuyu Başlat</button>
     
-    <!-- Manuel / Barkod Girişi Desteği -->
     <div class="manual-input">
       <input type="text" id="manualToken" placeholder="Token veya Test No (k8M9x2P4)">
       <button onclick="recordAttendance(document.getElementById('manualToken').value)">İşle</button>
@@ -66,7 +64,6 @@
 <script>
   let logs = [];
 
-  // Yoklama Kaydet
   async function recordAttendance(token) {
     if (!token) return;
     try {
@@ -85,7 +82,6 @@
     }
   }
 
-  // Listeyi Çek
   async function loadLogs() {
     try {
       const res = await fetch('/api/attendance');
@@ -101,29 +97,30 @@
     const list = document.getElementById('attendanceList');
     document.getElementById('countBadge').innerText = `Mevcut: ${logs.length}`;
     if (logs.length === 0) {
-      list.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:20px; font-size:14px;">Henüz okutulan öğrenci yok.</div>';
+      list.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:20px; font-size:14px;">Henüz giriş yapan öğrenci yok.</div>';
       return;
     }
     list.innerHTML = logs.map(l => `
       <div class="log-card">
-        <div>
-          <div class="log-name">✅ ${l.name}</div>
-          <div class="log-meta">Sınıf: ${l.class} • Bildirim İletildi</div>
+        <div class="log-left">
+          <img class="student-avatar" src="${l.photo || 'https://images.unsplash.com/photo-1543332164-6e82f355badc?w=150&auto=format&fit=crop&q=80'}">
+          <div>
+            <div class="log-name">${l.name}</div>
+            <div class="log-meta">Sınıf: ${l.class} • Fotoğraf Doğrulandı</div>
+          </div>
         </div>
         <div class="log-time">${l.time}</div>
       </div>
     `).join('');
   }
 
-  // Web NFC API (Android Chrome Destekli)
   async function startWebNFC() {
     if ("NDEFReader" in window) {
       try {
         const ndef = new NDEFReader();
         await ndef.scan();
-        alert("✅ NFC Okuyucu Aktif! Bileklikleri yaklaştırabilirsiniz.");
+        alert("✅ NFC Okuyucu Aktif!");
         ndef.onreading = event => {
-          // URL'den token'ı çıkar
           const decoder = new TextDecoder();
           for (const record of event.message.records) {
             const text = decoder.decode(record.data);
@@ -135,7 +132,7 @@
         alert("NFC Hatası: " + error.message);
       }
     } else {
-      alert("Bu tarayıcı doğrudan Web NFC desteklemiyor. Aşağıdaki kutudan manuel veya barkod okuyucuyla işlem yapabilirsiniz.");
+      alert("Bu tarayıcı Web NFC desteklemiyor. Manuel kutudan işlem yapabilirsiniz.");
     }
   }
 
